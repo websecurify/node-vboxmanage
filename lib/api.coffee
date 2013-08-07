@@ -40,22 +40,19 @@ command_queue = async.queue (task, callback) ->
 ###
 exports.command = (command, args..., callback) ->
 	taks =
-		output: []
-		code: 0
-		
 		run: (callback) =>
-			child = child_process.spawn @vboxmanage, [command].concat(args)
+			child = child_process.spawn vboxmanage_path, [command].concat(args)
 			
 			child.on 'error', (error) =>
-				callback()
-			
+				callback error
+				
 			child.on 'close', (code) =>
-				@code = code
-	
-	command_queue.push task, (err) ->
+				callback null, code
+				
+	command_queue.push task, (err, output, code) ->
 		return callback err if err
-		return callback null, task.output, task.code
-	
+		return callback null, output, code
+		
 ###
 	* @param {string} path
 	* @param {string} name
