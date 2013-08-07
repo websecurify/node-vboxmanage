@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"stream-buffers": "0.2.5",
 		"winston": "0.7.2",
 		"async": "0.2.9"
 	}
