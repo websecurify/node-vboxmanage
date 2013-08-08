@@ -1,3 +1,7 @@
+require 'coffee-script'
+
+# ---
+
 winston = require 'winston'
 
 # ---
@@ -10,6 +14,4 @@ module.exports = new winston.Logger({
 
 # ---
 
-exports.exception = (exception) ->
-	module.exports.debug(exception.message, exception);
-	
+exports.exception = (exception) -> module.exports.debug(exception.message, exception);
