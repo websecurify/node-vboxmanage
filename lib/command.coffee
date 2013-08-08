@@ -3,12 +3,9 @@ require 'coffee-script'
 # ---
 
 async = require 'async'
+logsmith = require 'logsmith'
 child_process = require 'child_process'
 stream_buffers = require 'stream-buffers'
-
-# ---
-
-logger = require './logger.coffee'
 
 # ---
 
@@ -33,7 +30,7 @@ exports.exec = do () ->
 			stream: new stream_buffers.WritableStreamBuffer
 			
 			run: (callback) ->
-				logger.verbose "exec #{vboxmanage_path} #{command} #{args.join ' '}"
+				logsmith.verbose "exec #{vboxmanage_path} #{command} #{args.join ' '}"
 				
 				child = child_process.spawn vboxmanage_path, [command].concat(args)
 				
