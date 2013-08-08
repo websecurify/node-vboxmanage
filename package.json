@@ -1,4 +1,27 @@
 {
+	"name": "vboxmanage",
+	"version": "0.0.1",
+	"author": "Websecurify <contact@websecurify.com>",
+	"description": "VBoxManage wrapper library.",
+	"license": "MIT",
+	
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/websecurify/node-vboxmanage.git"
+	},
+	
+	"keywords": [
+		"node",
+		"virtual",
+		"virtualbox"
+	],
+	
+	"main": "./lib/index.js",
+	
+	"directories": {
+		"lib": "./lib/"
+	},
+	
 	"dependencies": {
 		"stream-buffers": "0.2.5",
 		"coffee-script": "1.6.3",
