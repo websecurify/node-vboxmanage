@@ -14,6 +14,6 @@ command = require './command.coffee'
 exports.vm_info = (name, callback) ->
 	command.exec 'showvminfo', name, '--machinereadable', (err, code, output) ->
 		return callback err if err
-		return callback new Error "cannot show info for #{name}" if code > 0
+		return callback new Error "cannot show vm info for #{name}" if code > 0
 		return callback null, parse.machinereadable_list(output) if callback
 		
