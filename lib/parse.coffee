@@ -30,7 +30,7 @@ exports.linebreak_list = (input) ->
 	return input.split('\n').map(to_item).reduce(to_array, []).filter((item) -> Object.keys(item).length > 0)
 	
 ###
-	* @param {string} info
+	* @param {string} input
 ###
 exports.namepair_list = (input) ->
 	to_item = (line) ->
@@ -47,11 +47,11 @@ exports.namepair_list = (input) ->
 	input.split('\n').map(to_item).reduce(to_object)
 	
 ###
-	* @param {string} info
+	* @param {string} input
 ###
 exports.machinereadable_list = (input) ->
 	to_item = (line) ->
-		line = line.replace(/^(.+)=/, '"$1"=') if line[0] != '"'	
+		line = line.replace(/^(.+)=/, '"$1"=') if line[0] != '"'
 		line = line.replace(/^(".+")=/, '$1:')
 		
 		return JSON.parse("{#{line}}")
