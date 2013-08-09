@@ -6,20 +6,18 @@ to_value = (value) ->
 		when 'true' then true
 		when 'false' then false
 		else value
-		
+
 to_object = (previous, current) ->
 	previous[key] = to_value(val) for key, val of current if current
 	
 	return previous
-	
+
 to_array = (previous, current) ->
 	previous.push({}) if previous.length == 0 or current == null
 	
 	previous[previous.length - 1][key] = to_value(val) for key, val of current if current
 	
 	return previous
-	
-# ---
 
 ###
 	@param {string} info
@@ -33,7 +31,7 @@ exports.linebreak_list = (input) ->
 		return JSON.parse("{#{line}}")
 		
 	return input.split('\n').map(to_item).reduce(to_array, []).filter((item) -> Object.keys(item).length > 0)
-	
+
 ###
 	* @param {string} input
 ###
@@ -45,7 +43,7 @@ exports.namepair_list = (input) ->
 		return JSON.parse("{#{line}}")
 		
 	return input.split('\n').map(to_item).reduce(to_object)
-	
+
 ###
 	* @param {string} input
 ###
@@ -58,7 +56,7 @@ exports.machinereadable_list = (input) ->
 		return JSON.parse("{#{line}}")
 		
 	return input.split('\n').map(to_item).reduce(to_object)
-	
+
 ###
 	* @param {string} input
 ###
@@ -81,4 +79,3 @@ exports.property_list = (input) ->
 		return item
 		
 	return input.split('\n').map(to_item).reduce(to_object)
-	

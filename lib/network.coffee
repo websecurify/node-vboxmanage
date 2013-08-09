@@ -1,8 +1,6 @@
 machine = require './machine.coffee'
 command = require './command.coffee'
 
-# ---
-
 ###
 	* @param {string} name
 	* @param {function(?err, result)} callback

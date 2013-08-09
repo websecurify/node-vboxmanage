@@ -30,7 +30,7 @@ exports.list_folders = (vm, callback) ->
 				when 'path' then folders[type][mappings[path]] = val
 				
 		return callback null, folders if callback
-			
+
 ###
 	* Adds machine folder.
 	*
@@ -51,7 +51,7 @@ exports.add_machine_folder = (vm, name, path, readonly, automount, callback) ->
 		return callback err if err
 		return callback new Error "cannot add machine folder #{name} on #{vm}" if code > 0
 		return do callback if callback
-		
+
 ###
 	* Removes machine folder.
 	*
@@ -64,7 +64,7 @@ exports.remove_machine_folder = (vm, name, callback) ->
 		return callback err if err
 		return callback new Error "cannot remove machine folder #{name} on #{vm}" if code > 0
 		return do callback if callback
-		
+
 ###
 	* Adds transient folder.
 	*
@@ -85,7 +85,7 @@ exports.add_transient_folder = (vm, name, path, readonly, automount, callback) -
 		return callback err if err
 		return callback new Error "cannot add transient folder #{name} on #{vm}" if code > 0
 		return do callback if callback
-		
+
 ###
 	* Removes transient folder.
 	*
@@ -98,4 +98,3 @@ exports.remove_transient_folder = (vm, name, callback) ->
 		return callback err if err
 		return callback new Error "cannot remove transient folder #{name} on #{vm}" if code > 0
 		return do callback if callback
-		
