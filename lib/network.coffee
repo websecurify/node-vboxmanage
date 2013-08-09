@@ -2,6 +2,24 @@ machine = require './machine.coffee'
 command = require './command.coffee'
 
 ###
+	* @param {function(?err, result)} callback
+###
+exports.bridged_ifs = (callback) ->
+	command.exec 'list', 'bridgedifs', (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot list bridged ifs" if code > 0
+		return callback null, parse.linebreak_list(output) if callback
+		
+###
+	* @param {function(?err, result)} callback
+###
+exports.hostonly_ifs = (callback) ->
+	command.exec 'list', 'hostonlyifs', (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot list hostonly ifs" if code > 0
+		return callback null, parse.linebreak_list(output) if callback
+		
+###
 	* @param {string} name
 	* @param {function(?err, result)} callback
 ###
