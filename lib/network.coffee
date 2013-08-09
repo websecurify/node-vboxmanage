@@ -1,5 +1,5 @@
+machine = require './machine.coffee'
 command = require './command.coffee'
-property = require './property.coffee'
 
 # ---
 
@@ -8,7 +8,7 @@ property = require './property.coffee'
 	* @param {function(?err, result)} callback
 ###
 exports.list_adaptors = (name, callback) ->
-	property.enumerate name, (err, result) ->
+	machine.properties name, (err, result) ->
 		return callback err if err
 		
 		adaptors = {}

@@ -15,14 +15,26 @@ exports.list = (callback) ->
 ###
 	* Show vm info.
 	*
-	* @param {string} name
+	* @param {string} vm
 	* @param {function(?err, info)} callback
 ###
-exports.info = (name, callback) ->
-	command.exec 'showvminfo', name, '--machinereadable', (err, code, output) ->
+exports.info = (vm, callback) ->
+	command.exec 'showvminfo', vm, '--machinereadable', (err, code, output) ->
 		return callback err if err
-		return callback new Error "cannot show vm info for #{name}" if code > 0
+		return callback new Error "cannot show vm info for #{vm}" if code > 0
 		return callback null, parse.machinereadable_list(output) if callback
+
+###
+	* Enumerate guest properties
+	*
+	* @param {string} vm
+	* @param {function(?err, result)} callback
+###
+exports.properties = (vm, callback) ->
+	command.exec 'guestproperty', 'enumerate', vm, (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot enumerate properties for #{vm}" if code > 0
+		return callback null, parse.property_list(output) if callback
 
 ###
 	* Imports vm.
