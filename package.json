@@ -1,6 +1,6 @@
 {
 	"name": "vboxmanage",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"author": "Websecurify <contact@websecurify.com>",
 	"description": "VBoxManage wrapper library.",
 	"license": "MIT",
@@ -13,7 +13,8 @@
 	"keywords": [
 		"node",
 		"virtual",
-		"virtualbox"
+		"virtualbox",
+		"VBoxManage"
 	],
 	
 	"main": "./lib/index.js",
