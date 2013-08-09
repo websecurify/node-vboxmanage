@@ -1,7 +1,3 @@
-require 'coffee-script'
-
-# ---
-
 to_value = (value) ->
 	return switch value
 		when 'none' then null
@@ -48,7 +44,7 @@ exports.namepair_list = (input) ->
 		
 		return JSON.parse("{#{line}}")
 		
-	input.split('\n').map(to_item).reduce(to_object)
+	return input.split('\n').map(to_item).reduce(to_object)
 	
 ###
 	* @param {string} input
@@ -57,8 +53,32 @@ exports.machinereadable_list = (input) ->
 	to_item = (line) ->
 		line = line.replace(/^(.+)=/, '"$1"=') if line[0] != '"'
 		line = line.replace(/^(".+")=/, '$1:')
+		line = line.replace(/^(.+):\d+,/, '$1:0.')
 		
 		return JSON.parse("{#{line}}")
+		
+	return input.split('\n').map(to_item).reduce(to_object)
+	
+###
+	* @param {string} input
+###
+exports.property_list = (input) ->
+	to_item = (line) ->
+		item = {}
+		
+		return item if not line
+		
+		match = line.match(/^Name:\s*(.*?),\s*value:\s*(.*?),\s*timestamp:\s*(.*?),\s*flags:\s*(.*?)$/)
+		
+		return item if not match
+		
+		item[match[1]] = {
+			value: to_value(match[2])
+			timestamp: parseInt(match[3])
+			flags: match[4].split(',').map((token) -> token.trim())
+		}
+		
+		return item
 		
 	return input.split('\n').map(to_item).reduce(to_object)
 	
