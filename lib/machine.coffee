@@ -37,6 +37,18 @@ exports.properties = (vm, callback) ->
 		return callback null, parse.property_list(output) if callback
 
 ###
+	* Removes vm. The vm files are automatically deleted.
+	*
+	* @param {string} vm
+	* @param {function(?err)} callback
+###
+exports.remove = (vm, callback) ->
+	command.exec 'unregistervm', vm, '--delete', (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot remove #{vm}" if code > 0		
+		return do callback if callback
+
+###
 	* Imports vm.
 	*
 	* @param {string} path
@@ -65,24 +77,12 @@ exports.export = (vm, path, callback) ->
 ###
 	* Clones vm. The vm is automatically registered.
 	*
-	* @param {string} from
-	* @param {string} to
+	* @param {string} src_vm
+	* @param {string} to_vm
 	* @param {function(?err)} callback
 ###
-exports.clone = (from, to, callback) ->
-	command.exec 'clonevm', from, '--name', to, '--register', (err, code, output) ->
+exports.clone = (src_vm, to_vm, callback) ->
+	command.exec 'clonevm', src_vm, '--name', to_vm, '--register', (err, code, output) ->
 		return callback err if err
-		return callback new Error "cannot clone #{from} into #{to}" if code > 0		
-		return do callback if callback
-
-###
-	* Removes vm. The vm files are deleted.
-	*
-	* @param {string} vm
-	* @param {function(?err)} callback
-###
-exports.remove = (vm, callback) ->
-	command.exec 'unregistervm', vm, (err, code, output) ->
-		return callback err if err
-		return callback new Error "cannot remove #{vm}" if code > 0		
+		return callback new Error "cannot clone #{src_vm} into #{to_vm}" if code > 0		
 		return do callback if callback
