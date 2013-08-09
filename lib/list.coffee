@@ -1,30 +1,8 @@
-require 'coffee-script'
-
-# ---
-
 parse= require './parse.coffee'
 command = require './command.coffee'
 
 # ---
 
-###
-	* @param {function(?err, result)} callback
-###
-exports.vms = (callback) ->
-	command.exec 'list', 'vms', (err, code, output) ->
-		return callback err if err
-		return callback new Error "cannot list vms" if code > 0
-		return callback null, parse.namepair_list(output) if callback
-		
-###
-	* @param {function(?err, result)} callback
-###
-exports.running_vms = (callback) ->
-	command.exec 'list', 'runningvms', (err, code, output) ->
-		return callback err if err
-		return callback new Error "cannot list running vms" if code > 0
-		return callback null, parse.namepair_list(output) if callback
-		
 ###
 	* @param {function(?err, result)} callback
 ###
@@ -68,15 +46,6 @@ exports.hostonly_ifs = (callback) ->
 	command.exec 'list', 'hostonlyifs', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot list hostonly ifs" if code > 0
-		return callback null, parse.linebreak_list(output) if callback
-		
-###
-	* @param {function(?err, result)} callback
-###
-exports.dhcp_servers = (callback) ->
-	command.exec 'list', 'dhcpservers', (err, code, output) ->
-		return callback err if err
-		return callback new Error "cannot list dhcp servers" if code > 0
 		return callback null, parse.linebreak_list(output) if callback
 		
 ###
