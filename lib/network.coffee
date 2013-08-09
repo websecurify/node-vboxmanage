@@ -38,15 +38,16 @@ exports.list_adaptors = (vm, callback) ->
 			
 			continue if not match
 			
-			index = parseInt(match[1])
+			index = parseInt(match[1]) + 1
 			path = match[2]
-			ref = adaptors["vboxnet#{index}"] ?= {}
+			oref = ref = adaptors["Adaptor #{index}"] ?= {}
 			
 			for key in path.split('/')
 				path = key
+				oref = ref
 				ref = ref[path] ?= {}
 				
-			ref[path] = val.value
+			oref[path] = val.value
 			
 		callback null, adaptors if callback
 
@@ -55,11 +56,11 @@ exports.list_adaptors = (vm, callback) ->
 	*
 	* @param {string} vm
 	* @param {number} nic
-	* @param {string} network
+	* @param {string} netname
 	* @param {function(?err)} callback
 ###
-exports.set_hostonly = (vm, nic, network, callback) ->
-	command.exec 'modifyvm', vm, "--nic#{nic}", 'hostonly', "--hostonlyadapter#{nic}", network, (err, code, output) ->
+exports.set_hostonly = (vm, nic, netname, callback) ->
+	command.exec 'modifyvm', vm, "--nic#{nic}", 'hostonly', "--hostonlyadapter#{nic}", netname, (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot set hostonly network for nic #{nic} on #{vm}" if code > 0
 		return do callback if callback
@@ -69,11 +70,11 @@ exports.set_hostonly = (vm, nic, network, callback) ->
 	*
 	* @param {string} vm
 	* @param {number} nic
-	* @param {string} network
+	* @param {string} netname
 	* @param {function(?err)} callback
 ###
-exports.set_internal = (vm, nic, network, callback) ->
-	command.exec 'modifyvm', vm, "--nic#{nic}", 'intnet', "--intnet#{nic}", network, (err, code, output) ->
+exports.set_internal = (vm, nic, netname, callback) ->
+	command.exec 'modifyvm', vm, "--nic#{nic}", 'intnet', "--intnet#{nic}", netname, (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot set internal network for nic #{nic} on #{vm}" if code > 0
 		return do callback if callback
@@ -88,6 +89,6 @@ exports.set_internal = (vm, nic, network, callback) ->
 exports.set_nat = (vm, nic, callback) ->
 	command.exec 'modifyvm', vm, "--nic#{nic}", 'nat', (err, code, output) ->
 		return callback err if err
-		return callback new Error "cannot set nat network for nic #{nic} on #{vm}" if code > 0
+		return callback new Error "cannot set nat netname for nic #{nic} on #{vm}" if code > 0
 		return do callback if callback
 		
