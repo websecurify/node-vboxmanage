@@ -63,7 +63,7 @@ exports.export = (vm, path, callback) ->
 		return do callback if callback
 
 ###
-	* Clones vm.
+	* Clones vm. The vm is automatically registered.
 	*
 	* @param {string} from
 	* @param {string} to
@@ -73,4 +73,16 @@ exports.clone = (from, to, callback) ->
 	command.exec 'clonevm', from, '--name', to, '--register', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot clone #{from} into #{to}" if code > 0		
+		return do callback if callback
+
+###
+	* Removes vm. The vm files are deleted.
+	*
+	* @param {string} vm
+	* @param {function(?err)} callback
+###
+exports.remove = (vm, callback) ->
+	command.exec 'unregistervm', vm, (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot remove #{vm}" if code > 0		
 		return do callback if callback
