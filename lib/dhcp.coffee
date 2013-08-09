@@ -13,7 +13,7 @@ exports.list_servers = (callback) ->
 		return callback null, parse.linebreak_list(output) if callback
 
 ###
-	* Adds hostonly dhcp server. The server is not enables by default.
+	* Adds hostonly dhcp server. The server is not enabled by default.
 	*
 	* @param {string} network
 	* @param {string} ip
