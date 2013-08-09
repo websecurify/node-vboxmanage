@@ -2,29 +2,33 @@ machine = require './machine.coffee'
 command = require './command.coffee'
 
 ###
+	* Lists bridged network interfaces.
+	*
 	* @param {function(?err, result)} callback
 ###
-exports.bridged_ifs = (callback) ->
+exports.list_bridged_ifs = (callback) ->
 	command.exec 'list', 'bridgedifs', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot list bridged ifs" if code > 0
 		return callback null, parse.linebreak_list(output) if callback
-		
+
 ###
+	* Lists hostonly network interfaces.
+	*
 	* @param {function(?err, result)} callback
 ###
-exports.hostonly_ifs = (callback) ->
+exports.list_hostonly_ifs = (callback) ->
 	command.exec 'list', 'hostonlyifs', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot list hostonly ifs" if code > 0
 		return callback null, parse.linebreak_list(output) if callback
-		
+
 ###
-	* @param {string} name
+	* @param {string} vm
 	* @param {function(?err, result)} callback
 ###
-exports.list_adaptors = (name, callback) ->
-	machine.properties name, (err, result) ->
+exports.list_adaptors = (vm, callback) ->
+	machine.properties vm, (err, result) ->
 		return callback err if err
 		
 		adaptors = {}
@@ -45,7 +49,7 @@ exports.list_adaptors = (name, callback) ->
 			ref[path] = val.value
 			
 		callback null, adaptors if callback
-		
+
 ###
 	* Sets hostonly network adaptor on vm.
 	*
