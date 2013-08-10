@@ -1,5 +1,6 @@
 async = require 'async'
 dhcp = require './dhcp.coffee'
+proto = require './proto.coffee'
 share = require './share.coffee'
 network = require './network.coffee'
 
@@ -18,12 +19,17 @@ exports.system = (config, callback) ->
 	
 	configure_dhcp = (nn, nc, add_dhcp, modify_dhcp) ->
 		(callback) ->
+			return callback new Error "no ip specified for network #{nn}" if not nc.ip?
+			return callback new Error "no netmask specified for network #{nn}" if not nc.netmask?
+			return callback new Error "no dhcp lower_ip specified for network #{nn}" if not nc.dhcp.lower_ip?
+			return callback new Error "no dhcp upper_ip specified for network #{nn}" if not nc.dhcp.upper_ip?
+			
 			dhcp.list_servers (err, servers) ->
 				return callback err if err
 				
-				s = servers.reduce (previous, current) ->
-					return previous if previous and previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}"
-					return current if current and current.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}"
+				s = servers.narrow (previous, current) ->
+					return previous if previous and (previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}")
+					return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
 					
 				h = () ->
 					s.IP != nc.ip or
@@ -40,6 +46,28 @@ exports.system = (config, callback) ->
 					 add_dhcp nn, nc.ip, nc.netmask, nc.dhcp.lower_ip, nc.dhcp.upper_ip, callback
 					 
 	for netname, netconfig of config.network.hostonly
+		actions.push do (netname, netconfig) ->
+			(callback) ->
+				network.list_hostonly_ifs (err, ifs) ->
+					return callback err if err
+					
+					i = ifs.narrow (previous, current) ->
+						return previous if previous and previous.Name == netname
+						return current if current and current.Name == netname
+						
+					if not i
+						callee = arguments.callee
+						
+						network.create_hostonly_if (err) ->
+							return callback err if err
+							
+							network.list_hostonly_ifs callee
+					else
+						if i.IP != netconfig.ip or s.i.NetworkMask != netconfig.netmask
+							network.configure_hostonly_if netname, netconfig.ip, netconfig.netmask, callback
+						else
+							return do callback if callback
+							
 		if netconfig.dhcp?
 			actions.push do (netname, netconfig) ->
 				configure_dhcp netname, netconfig, dhcp.add_hostonly_server, dhcp.modify_hostonly_server
@@ -79,7 +107,7 @@ exports.machine = (vm, config, callback) ->
 	config.shares ?= {}
 	
 	for adaptor, i in config.network.adaptors
-		continue if not adaptor.type?
+		return callback new Error "no type specified for adaptor" if not adaptor.type?
 		
 		index = i + 1
 		
@@ -87,11 +115,15 @@ exports.machine = (vm, config, callback) ->
 			when 'hostonly'
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
+						return callback new Error "no network specified for adaptor" if not adaptor.network?
+						
 						network.set_hostonly vm, index, adaptor.network, callback
 						
 			when 'internal'
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
+						return callback new Error "no network specified for adaptor" if not adaptor.network?
+						
 						network.set_internal vm, index, adaptor.network, callback
 						
 			when 'nat'
