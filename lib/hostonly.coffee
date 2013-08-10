@@ -58,14 +58,14 @@ exports.configure_if = (netname, ip, netmask, callback) ->
 	* @param {function(?err)} callback
 ###
 exports.ensure_if = (netname, ip, netmask, callback) ->
-	exports.list (err, interfaces) ->
+	exports.list (err, ifaces) ->
 		return callback err if err
 		
-		interface = interfaces.narrow (previous, current) ->
+		iface = ifaces.narrow (previous, current) ->
 			return previous if previous and previous.Name == netname
 			return current if current and current.Name == netname
 			
-		if not interface
+		if not iface
 			callee = arguments.callee
 			
 			exports.create_if (err) ->
@@ -73,7 +73,7 @@ exports.ensure_if = (netname, ip, netmask, callback) ->
 				
 				exports.list callee
 		else
-			if interface.IP != ip or interface.NetworkMask != netmask
-				hostonly.configure_if netname, ip, netmask, callback
+			if iface.IP != ip or iface.NetworkMask != netmask
+				exports.configure_if netname, ip, netmask, callback
 			else
 				return do callback if callback
