@@ -114,7 +114,7 @@ exports.ensure_hostonly_server = (netname, ip, netmask, lower_ip, upper_ip, call
 			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
 			
 		if server
-			if server.IP != ip or server.NetMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+			if server.IP != ip or server.NetworkMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
 				exports.modify_hostonly_server netname, ip, netmask, lower_ip, upper_ip, callback
 			else
 				return do callback if callback
@@ -230,7 +230,7 @@ exports.ensure_internal_server = (netname, ip, netmask, lower_ip, upper_ip, call
 			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
 			
 		if server
-			if server.IP != ip or server.NetMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+			if server.IP != ip or server.NetworkMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
 				exports.modify_internal_server netname, ip, netmask, lower_ip, upper_ip, callback
 			else
 				return do callback if callback
