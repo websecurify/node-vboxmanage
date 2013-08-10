@@ -1,4 +1,5 @@
 parse = require './parse.coffee'
+proto = require './proto.coffee'
 command = require './command.coffee'
 
 ###
@@ -95,6 +96,32 @@ exports.disable_hostonly_server = (netname, callback) ->
 		return do callback if callback
 
 ###
+	* Ensures that a hostonly dhcp server is available and configured.
+	*
+	* @param {string} netname
+	* @param {string} ip
+	* @param {string} netmask
+	* @param {string} lower_ip
+	* @param {string} upper_ip
+	* @param {function(?err)} callback
+###
+exports.ensure_hostonly_server = (netname, ip, netmask, lower_ip, upper_ip, callback) ->
+	exports.list_servers (err, servers) ->
+		return callback err if err
+		
+		servers = servers.narrow (previous, current) ->
+			return previous if previous and (previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}")
+			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
+			
+		if server
+			if server.IP != ip or server.NetMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+				exports.modify_hostonly_server netname, ip, netmask, lower_ip, upper_ip, callback
+			else
+				return do callback if callback
+		else
+			exports.add_hostonly_server netname, ip, netmask, lower_ip, upper_ip, callback
+
+###
 	* Adds internal dhcp server. The server is not enabled by default.
 	*
 	* @param {string} netname
@@ -183,3 +210,29 @@ exports.disable_internal_server = (netname, callback) ->
 		return callback err if err
 		return callback new Error "cannot disable internal dhcp server on #{netname}" if code > 0
 		return do callback if callback
+
+###
+	* Ensures that an internal dhcp server is available and configured.
+	*
+	* @param {string} netname
+	* @param {string} ip
+	* @param {string} netmask
+	* @param {string} lower_ip
+	* @param {string} upper_ip
+	* @param {function(?err)} callback
+###
+exports.ensure_internal_server = (netname, ip, netmask, lower_ip, upper_ip, callback) ->
+	exports.list_servers (err, servers) ->
+		return callback err if err
+		
+		servers = servers.narrow (previous, current) ->
+			return previous if previous and (previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}")
+			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
+			
+		if server
+			if server.IP != ip or server.NetMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+				exports.modify_internal_server netname, ip, netmask, lower_ip, upper_ip, callback
+			else
+				return do callback if callback
+		else
+			exports.add_internal_server netname, ip, netmask, lower_ip, upper_ip, callback
