@@ -2,7 +2,7 @@ async = require 'async'
 dhcp = require './dhcp.coffee'
 proto = require './proto.coffee'
 share = require './share.coffee'
-network = require './network.coffee'
+hostonly = require './hostonly.coffee'
 adaptors = require './adaptors.coffee'
 
 ###
@@ -21,7 +21,7 @@ exports.system = (config, callback) ->
 	for n, c of config.network.hostonly
 		actions.push do (n, c) ->
 			(callback) ->
-				network.list_hostonly_ifs (err, ifs) ->
+				hostonly.list (err, ifs) ->
 					return callback err if err
 					
 					i = ifs.narrow (previous, current) ->
@@ -31,13 +31,13 @@ exports.system = (config, callback) ->
 					if not i
 						callee = arguments.callee
 						
-						network.create_hostonly_if (err) ->
+						hostonly.create_if (err) ->
 							return callback err if err
 							
-							network.list_hostonly_ifs callee
+							hostonly.list callee
 					else
 						if i.IP != c.ip or s.i.NetworkMask != c.netmask
-							network.configure_hostonly_if n, c.ip, c.netmask, callback
+							hostonly.configure_if n, c.ip, c.netmask, callback
 						else
 							return do callback if callback
 							
