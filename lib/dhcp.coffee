@@ -109,12 +109,12 @@ exports.ensure_hostonly_server = (netname, ip, netmask, lower_ip, upper_ip, call
 	exports.list_servers (err, servers) ->
 		return callback err if err
 		
-		servers = servers.narrow (previous, current) ->
-			return previous if previous and (previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}")
-			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
+		server = servers.narrow (previous, current) ->
+			return previous if previous and previous.NetworkName == "HostInterfaceNetworking-#{netname}"
+			return current if current and current.NetworkName == "HostInterfaceNetworking-#{netname}"
 			
 		if server
-			if server.IP != ip or server.NetworkMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+			if server.IP != ip or server.NetworkMask != netmask or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
 				exports.modify_hostonly_server netname, ip, netmask, lower_ip, upper_ip, callback
 			else
 				return do callback if callback
@@ -225,12 +225,12 @@ exports.ensure_internal_server = (netname, ip, netmask, lower_ip, upper_ip, call
 	exports.list_servers (err, servers) ->
 		return callback err if err
 		
-		servers = servers.narrow (previous, current) ->
-			return previous if previous and (previous.NetworkName == nn or previous.NetworkName == "HostInterfaceNetworking-#{nn}")
-			return current if current and (current.NetworkName == nn or current.NetworkName == "HostInterfaceNetworking-#{nn}")
+		server = servers.narrow (previous, current) ->
+			return previous if previous and previous.NetworkName == netname
+			return current if current and current.NetworkName == netname
 			
 		if server
-			if server.IP != ip or server.NetworkMask != netmaks or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
+			if server.IP != ip or server.NetworkMask != netmask or server.lowerIPAddress != lower_ip or server.upperIPAddress != upper_ip
 				exports.modify_internal_server netname, ip, netmask, lower_ip, upper_ip, callback
 			else
 				return do callback if callback
