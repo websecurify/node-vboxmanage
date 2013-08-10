@@ -21,26 +21,8 @@ exports.system = (config, callback) ->
 	for n, c of config.network.hostonly
 		actions.push do (n, c) ->
 			(callback) ->
-				hostonly.list (err, ifs) ->
-					return callback err if err
-					
-					i = ifs.narrow (previous, current) ->
-						return previous if previous and previous.Name == n
-						return current if current and current.Name == n
-						
-					if not i
-						callee = arguments.callee
-						
-						hostonly.create_if (err) ->
-							return callback err if err
-							
-							hostonly.list callee
-					else
-						if i.IP != c.ip or s.i.NetworkMask != c.netmask
-							hostonly.configure_if n, c.ip, c.netmask, callback
-						else
-							return do callback if callback
-							
+				hostonly.ensure_if n, c.ip, c.netmask, callback
+				
 		if c.dhcp?
 			actions.push do (n, c) ->
 				(callback) ->
