@@ -3,6 +3,7 @@ dhcp = require './dhcp.coffee'
 proto = require './proto.coffee'
 share = require './share.coffee'
 network = require './network.coffee'
+adaptors = require './adaptors.coffee'
 
 ###
 	* Configures the system.
@@ -91,19 +92,19 @@ exports.machine = (vm, config, callback) ->
 					(callback) ->
 						return callback new Error "no network specified for adaptor" if not adaptor.network?
 						
-						network.set_hostonly vm, index, adaptor.network, callback
+						adaptors.set_hostonly vm, index, adaptor.network, callback
 						
 			when 'internal'
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
 						return callback new Error "no network specified for adaptor" if not adaptor.network?
 						
-						network.set_internal vm, index, adaptor.network, callback
+						adaptors.set_internal vm, index, adaptor.network, callback
 						
 			when 'nat'
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
-						network.set_nat vm, index, callback
+						adaptros.set_nat vm, index, callback
 						
 	for name, path of config.shares
 		actions.push do (vm, name, path) ->
