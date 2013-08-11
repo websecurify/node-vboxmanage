@@ -69,5 +69,5 @@ exports.set_internal = (vm, nic, netname, callback) ->
 exports.set_nat = (vm, nic, callback) ->
 	command.exec 'modifyvm', vm, "--nic#{nic}", 'nat', (err, code, output) ->
 		return callback err if err
-		return callback new Error "cannot set nat netname for nic #{nic} on #{vm}" if code > 0
+		return callback new Error "cannot set nat network for nic #{nic} on #{vm}" if code > 0
 		return do callback if callback
