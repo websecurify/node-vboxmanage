@@ -1,5 +1,5 @@
 ###
-	* @param {any=} initial_value
+	* @param {*=} initial_value
 	* @param {function(current, previous, index, array)} callback
 ###
 Array::narrow = (initial_value, callback) ->
