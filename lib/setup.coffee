@@ -52,7 +52,7 @@ exports.system = (config, callback) ->
 				
 			actions.push do (netname, netconfig) ->
 				(callback) ->
-					dhcp.enable_internal_server n, callback
+					dhcp.enable_internal_server netname, callback
 					
 	if actions.length == 0
 		return do callback if callback
