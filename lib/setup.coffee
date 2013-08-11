@@ -86,7 +86,7 @@ exports.machine = (vm, config, callback) ->
 			when 'nat'
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
-						adaptros.set_nat vm, index, callback
+						adaptors.set_nat vm, index, callback
 						
 	for name, path of config.shares
 		actions.push do (vm, name, path) ->
