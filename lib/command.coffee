@@ -1,11 +1,11 @@
+path = require 'path'
 async = require 'async'
 logsmith = require 'logsmith'
 child_process = require 'child_process'
 stream_buffers = require 'stream-buffers'
 
 ###
-	* Executes VBoxManage command. Commands are queued in order to prevent race
-	* conditions within VirtualBox.
+	* Executes VBoxManage command. Commands are queued in order to prevent race conditions within VirtualBox.
 	*
 	* @param {string} command
 	* @param {array<string>} args
