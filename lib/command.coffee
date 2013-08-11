@@ -40,7 +40,7 @@ exports.exec = do () ->
 					child.stderr.pipe process.stderr
 					
 				child.on 'error', (error) => callback error
-				child.on 'close', (code) => callback null, code, @stream.getContentsAsString('utf8')
+				child.on 'close', (code) => callback null, code, @stream.getContentsAsString('utf8') or ''
 				
 		vboxmanage_queue.push task, (err, code, output) ->
 			return callback err if err
