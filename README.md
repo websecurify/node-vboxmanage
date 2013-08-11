@@ -13,4 +13,4 @@ This library provides a collection of functions to interact with VirtualBox via 
 
 # Documentation
 
-The library is self-documented with closure-style comments embedded directly into the source code.
+The library is self-documented with [closure](https://developers.google.com/closure/compiler/docs/js-for-compiler)-style comments embedded directly into the source code.
