@@ -79,10 +79,9 @@ exports.ensure_if = (netname, ip, netmask, callback) ->
 				
 				exports.list callee
 		else
-			created_ifs = ifaces
-				.map (iface) -> iface.Name
-				.filter (iface) -> iface not in snapshoted_ifs and iface != netname
-				
+			created_ifs = ifaces.map (iface) -> iface.Name
+			created_ifs = created_ifs.filter (iface) -> iface not in snapshoted_ifs and iface != netname
+			
 			if created_ifs.length > 0
 				wrapper = (next) ->
 					return async.each created_ifs, ((iface, callback) -> exports.remove_if iface, callback), next
