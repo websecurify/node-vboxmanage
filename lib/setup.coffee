@@ -18,27 +18,39 @@ exports.system = (config, callback) ->
 	config.network.hostonly ?= {}
 	config.network.internal ?= {}
 	
-	for n, c of config.network.hostonly
-		actions.push do (n, c) ->
+	for netname, netconfig of config.network.hostonly
+		return callback new Error "no ip specified for hostonly network #{netname}" if not netconfig.ip?
+		return callback new Error "no netmask specified for hostonly network #{netname}" if not netconfig.netmask?
+		
+		actions.push do (netname, netconfig) ->
 			(callback) ->
-				hostonly.ensure_if n, c.ip, c.netmask, callback
+				hostonly.ensure_if netname, netconfig.ip, netconfig.netmask, callback
 				
-		if c.dhcp?
-			actions.push do (n, c) ->
+		if netconfig.dhcp?
+			return callback new Error "no lower_ip specified for hostonly network #{netname} dhcp" if not netconfig.dhcp.lower_ip?
+			return callback new Error "no upper_ip specified for hostonly network #{netname} dhcp" if not netconfig.dhcp.upper_ip?
+			
+			actions.push do (netname, netconfig) ->
 				(callback) ->
-					dhcp.ensure_hostonly_server n, c.ip, c.netmask, c.dhcp.lower_ip, c.dhcp.upper_ip, callback
+					dhcp.ensure_hostonly_server netname, netconfig.ip, netconfig.netmask, netconfig.dhcp.lower_ip, netconfig.dhcp.upper_ip, callback
 				
-			actions.push do (n, c) ->
+			actions.push do (netname, netconfig) ->
 				(callback) ->
-					dhcp.enable_hostonly_server n, callback
+					dhcp.enable_hostonly_server netname, callback
 					
-	for n, c of config.network.internal
-		if c.dhcp?
-			actions.push do (n, c) ->
+	for netname, c of config.network.internal
+		return callback new Error "no ip specified for internal network #{netname}" if not netconfig.ip?
+		return callback new Error "no netmask specified for internal network #{netname}" if not netconfig.netmask?
+		
+		if netconfig.dhcp?
+			return callback new Error "no lower_ip specified for internal network #{netname} dhcp" if not netconfig.dhcp.lower_ip?
+			return callback new Error "no upper_ip specified for internal network #{netname} dhcp" if not netconfig.dhcp.upper_ip?
+			
+			actions.push do (netname, netconfig) ->
 				(callback) ->
-					dhcp.ensure_internal_server n, c.ip, c.netmask, c.dhcp.lower_ip, c.dhcp.upper_ip, callback
+					dhcp.ensure_internal_server netname, netconfig.ip, netconfig.netmask, netconfig.dhcp.lower_ip, netconfig.dhcp.upper_ip, callback
 				
-			actions.push do (n, c) ->
+			actions.push do (netname, netconfig) ->
 				(callback) ->
 					dhcp.enable_internal_server n, callback
 					
@@ -70,17 +82,17 @@ exports.machine = (vm, config, callback) ->
 		
 		switch adaptor.type
 			when 'hostonly'
+				return callback new Error "no network specified for adaptor" if not adaptor.network?
+				
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
-						return callback new Error "no network specified for adaptor" if not adaptor.network?
-						
 						adaptors.set_hostonly vm, index, adaptor.network, callback
 						
 			when 'internal'
+				return callback new Error "no network specified for adaptor" if not adaptor.network?
+				
 				actions.push do (vm, adaptor, index) ->
 					(callback) ->
-						return callback new Error "no network specified for adaptor" if not adaptor.network?
-						
 						adaptors.set_internal vm, index, adaptor.network, callback
 						
 			when 'nat'
