@@ -1,3 +1,4 @@
+async = require 'async'
 parse = require './parse.coffee'
 proto = require './proto.coffee'
 command = require './command.coffee'
@@ -58,9 +59,14 @@ exports.configure_if = (netname, ip, netmask, callback) ->
 	* @param {function(?err)} callback
 ###
 exports.ensure_if = (netname, ip, netmask, callback) ->
+	snapshoted_ifs = null
+	
 	exports.list (err, ifaces) ->
 		return callback err if err
 		
+		if not snapshoted_ifs
+			snapshoted_ifs = ifaces.map (iface) -> iface.Name
+			
 		iface = ifaces.narrow (previous, current) ->
 			return previous if previous and previous.Name == netname
 			return current if current and current.Name == netname
@@ -73,7 +79,22 @@ exports.ensure_if = (netname, ip, netmask, callback) ->
 				
 				exports.list callee
 		else
-			if iface.IP != ip or iface.NetworkMask != netmask
-				exports.configure_if netname, ip, netmask, callback
+			created_ifs = ifaces
+				.map (iface) -> iface.Name
+				.filter (iface) -> iface not in snapshoted_ifs and iface != netname
+				
+			if created_ifs.length > 0
+				wrapper = (next) ->
+					return async.each created_ifs, ((iface, callback) -> exports.remove_if iface, callback), next
 			else
-				return do callback if callback
+				wrapper = (next) ->
+					return do next if next
+					
+			if iface.IP != ip or iface.NetworkMask != netmask
+				wrapper (err) ->
+					return callback err if err
+					return exports.configure_if netname, ip, netmask, callback
+			else
+				wrapper (err) ->
+					return callback err if err
+					return do callback if callback
