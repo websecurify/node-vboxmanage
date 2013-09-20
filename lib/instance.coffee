@@ -61,6 +61,18 @@ exports.resume = (vm, callback) ->
 		return do callback if callback
 
 ###
+	* Save vm.
+	*
+	* @param {string} vm
+	* @param {function(?err)}
+###
+exports.save = (vm, callback) ->
+	command.exec 'controlvm', vm, 'savestate', (err, code, output) ->
+		return callback err if err
+		return callback new Error "cannot save #{vm}" if code > 0
+		return do callback if callback
+
+###
 	* Executes command on vm.
 	*
 	* @param {string} vm
