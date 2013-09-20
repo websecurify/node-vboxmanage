@@ -43,7 +43,7 @@ exports.stop = (vm, callback) ->
 	* @param {function(?err)}
 ###
 exports.pause = (vm, callback) ->
-	command.exec 'controlvm', 'pause', vm, (err, code, output) ->
+	command.exec 'controlvm', vm, 'pause', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot pause #{vm}" if code > 0
 		return do callback if callback
@@ -55,7 +55,7 @@ exports.pause = (vm, callback) ->
 	* @param {function(?err)}
 ###
 exports.resume = (vm, callback) ->
-	command.exec 'controlvm', 'resume', vm, (err, code, output) ->
+	command.exec 'controlvm', vm, 'resume', (err, code, output) ->
 		return callback err if err
 		return callback new Error "cannot resume #{vm}" if code > 0
 		return do callback if callback
