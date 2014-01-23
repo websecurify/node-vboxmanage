@@ -43,7 +43,7 @@ exports.namepair_list = (input) ->
 		return JSON.parse("{#{line}}")
 		
 	return input.split('\n').map(to_item).reduce(to_object)
-
+	
 ###
 	* @param {string} input
 ###
@@ -52,11 +52,12 @@ exports.machinereadable_list = (input) ->
 		line = line.replace(/^(.+)=/, '"$1"=') if line[0] != '"'
 		line = line.replace(/^(".+")=/, '$1:')
 		line = line.replace(/^(.+):\d+,/, '$1:0.')
+		line = line.replace(/@\d,\d$/, '')
 		
 		return JSON.parse("{#{line}}")
 		
 	return input.split('\n').map(to_item).reduce(to_object)
-
+	
 ###
 	* @param {string} input
 ###
