@@ -1,6 +1,6 @@
 {
 	"name": "vboxmanage",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"author": "Websecurify <contact@websecurify.com>",
 	"description": "VBoxManage wrapper library.",
 	"license": "MIT",
